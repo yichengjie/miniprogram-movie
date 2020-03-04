@@ -1,2 +1,11 @@
-<!--pages/movie/movie.wxml-->
-<text>pages/movie/movie.wxml</text>
+<view class="view" wx:for ="{{movieList}}" wx:key ="index">
+  <image src="{{item.images.small}}"></image>
+  <view class="movie-info">
+    <view class="movie-title">{{item.title}}</view>
+    <view>观众评分：{{item.rating.average}}</view>
+    <view wx:for="{{item.casts}}" wx:key="index">
+      {{item.name}}
+    </view>
+    <view>年份：{{item.year}}</view>
+  </view>
+</view>
