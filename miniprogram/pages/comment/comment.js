@@ -1,21 +1,33 @@
-// pages/movie/movie.js
+// pages/comment/comment.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    movieList:[]
+    detail:{}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-     this.getMovieList() ;
-  },
+     wx.cloud.callFunction({
+       name:'moviedetail',
+       data:{
+         movieId: options.moviedid
+       }
+     }).then(res =>{
+       console.info(res) ;
+       let detail = JSON.parse(res.result);
+       this.setData({
+         detail:detail
+       }) ;
+     }).catch(err => {
+       console.info(err) ;
+     }) ;
 
-  
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -56,7 +68,7 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    this.getMovieList() ;
+
   },
 
   /**
@@ -64,37 +76,5 @@ Page({
    */
   onShareAppMessage: function () {
 
-  },
-
-  gotoComment: function(event){
-    var that = this ;
-    var dataset = event.target.dataset ;
-    var movieId = dataset.movieid ;
-    wx.navigateTo({
-      url: '../comment/comment?moviedid=' + movieId,
-    })
-
-  },
-
-  getMovieList: function () {
-    wx.showLoading({
-      title: '加载中...',
-    })
-    wx.cloud.callFunction({
-      name: 'movielist',
-      data: {
-        start: this.data.movieList.length,
-        count: 5
-      }
-    }).then(res => {
-      wx.hideLoading();
-      let newData = JSON.parse(res.result).subjects;
-      this.setData({
-        movieList: this.data.movieList.concat(newData)
-      });
-    }).catch(err => {
-      wx.hideLoading();
-      console.error(err);
-    });
   }
 })
